@@ -2,7 +2,7 @@
 #define LIMITFIELD_H
 #include "QVector2D"
 
-// Структура limitfield представляет прямоугольник, стороны которого параллельны осям координат.
+    // Структура limitfield представляет прямоугольник, стороны которого параллельны осям координат.
 struct limitfield{
     limitfield() = default;
 

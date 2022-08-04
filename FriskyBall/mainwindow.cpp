@@ -1,17 +1,16 @@
     /* Подключаем заголовки используемых классов. */
 #include <mainwindow.h>
 
-constexpr unsigned WINDOW_WIDTH = 1000;
+constexpr unsigned WINDOW_WIDTH = 1920;
 constexpr unsigned WINDOW_HEIGHT = 1000;
 
-
-     /*В конструкторе создадим в динамической памяти новый объект QBackingStore.
-     В современном C++ не принято использовать "new", но пока вы работаете с Qt,
-     "new" - это норма, т.к. Qt использует особый механизм управления памятью
-     parent-child.
-     Именно поэтому мы передали "this" в конструктор QBackingStore.
-     Объект класса MainWindow становится родителем объекта класса QBackingStore.
-     Когда будет вызван деструктор MainWindow, Qt удалит и все дочерние объекты.*/
+    /*В конструкторе создадим в динамической памяти новый объект QBackingStore.
+    В современном C++ не принято использовать "new", но пока вы работаете с Qt,
+    "new" - это норма, т.к. Qt использует особый механизм управления памятью
+    parent-child.
+    Именно поэтому мы передали "this" в конструктор QBackingStore.
+    Объект класса MainWindow становится родителем объекта класса QBackingStore.
+    Когда будет вызван деструктор MainWindow, Qt удалит и все дочерние объекты.*/
 
 MainWindow::MainWindow(QWindow *parent)
     : QWindow(parent)
@@ -40,7 +39,6 @@ void MainWindow::setAnimating(bool isAnimating)
         renderLater();
     }
 }
-
     /*мы должны обработать только событие UpdateRequest,
      которое уведомляет о запросе на изменение окна
      изменение размера должно приводить к перерисовке окна*/
