@@ -18,9 +18,6 @@ private:
     /*добавим поля для хранения скорости шарика (которая теперь будет изменяться динамически),
      * размера шарика (неизменного), границ сцены (неизменных).*/
 
-    //float m_ballPositionX = 0;
-    //float m_ballPositionY = 0;
-
     QVector2D           m_ballPosition;
     QVector2D           m_ballSpeed;
     const double        m_gravity;
