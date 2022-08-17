@@ -1,6 +1,6 @@
 #ifndef LIMITFIELD_H
 #define LIMITFIELD_H
-#include "QVector2D"
+#include "point.h"
 
     // Структура limitfield представляет прямоугольник, стороны которого параллельны осям координат.
 struct limitfield{
@@ -12,25 +12,21 @@ struct limitfield{
     }
 
     // позиция левого верхнего угла
-    QVector2D origin;
+    Point origin;
     // размеры окна (ширина, высота)
-    QVector2D size;
+    Point size;
 
     float leftEdge() const {
-        return origin.x();
+        return origin.pointX;
     }
     float rightEdge() const{
-        return origin.x() + size.x();
+        return origin.pointX + size.pointX;
     }
     float topEdge() const {
-        return origin.y();
+        return origin.pointY;
     }
     float bottomEdge() const{
-        return origin.y() + size.y();
+        return origin.pointY + size.pointY;
     }
-
 };
-
-
-
 #endif // LIMITFIELD_H
