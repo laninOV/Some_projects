@@ -14,7 +14,7 @@ namespace{
     constexpr double    COEF_ENERGY_LOSS = 1 - 0.2;            // потеря энергии при отскоке 20%
     constexpr int                  SCALE = 480;                // коэффициент, для приведения к нормальным величинам
     int                     JUMP_COUNTER = 0;                  // количество отскоков
-    constexpr int          BALLS_COUNTER = 2;                // количество шариков
+    constexpr int          BALLS_COUNTER = 20;                // количество шариков
     constexpr unsigned      WINDOW_WIDTH = 1920;
     constexpr unsigned     WINDOW_HEIGHT = 1000;
 
@@ -36,7 +36,7 @@ Scene::Scene(const limitfield &borders)
         velocity.pointY = -50 + rand() % 300 + 1;
 
         int size;
-        size = 400;//100 + rand() % 350 + 1;
+        size = 100;//100 + rand() % 350 + 1;
 
         float loss;
         loss = (rand() % 100)/(100*1.0); // диапазон чисел от 0 до 1
@@ -96,6 +96,8 @@ void Scene::updateOneBall(float deltaSeconds, Ball *one_ball)
             if (TotalDistanseBetweenEdgeBalls  > DistanceBetweenEdgeBalls)
             {
                 qDebug()<<"КАСАНИЕ";
+            m_ballSpeed.pointX = -m_ballSpeed.pointY;
+            m_ballSpeed.pointY = -m_ballSpeed.pointX;
                 //std::exit(0);
             }
             else if (TotalDistanseBetweenEdgeBalls < DistanceBetweenEdgeBalls)
@@ -109,7 +111,6 @@ void Scene::updateOneBall(float deltaSeconds, Ball *one_ball)
     /*мы должны проверить два случая
       - левая граница шарика левее левой границы поля
       - правая граница шарика правее правой границы поля */
-
 
     if (m_ballPosition.pointX < m_borders.leftEdge())
     {
