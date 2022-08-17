@@ -1,6 +1,7 @@
 #include "scene.h"
 #include "point.h"
 #include "limitfield.h"
+#include <math.h>
 
     /*мы используем constexpr для определения констант
     мы используем анонимные пространства имён,
@@ -34,8 +35,8 @@ Scene::Scene(const limitfield &borders)
         velocity.pointX = -50 + rand() % 300 + 1;
         velocity.pointY = -50 + rand() % 300 + 1;
 
-        float size;
-        size = 300 + rand() % 450 + 1;
+        int size;
+        size = 400;//100 + rand() % 350 + 1;
 
         float loss;
         loss = (rand() % 100)/(100*1.0); // диапазон чисел от 0 до 1
@@ -57,7 +58,7 @@ void Scene::updateOneBall(float deltaSeconds, Ball *one_ball)
 {
     Point m_ballSpeed    = one_ball->getVelocity();
     Point m_ballPosition = one_ball->getPosition();
-    float m_ballSize     = one_ball->getSize();
+    int m_ballSize       = one_ball->getSize();
 
 
     m_ballSpeed.pointX += 1 * deltaSeconds;            // нахождение "новой скорости для оси oX"
@@ -66,14 +67,12 @@ void Scene::updateOneBall(float deltaSeconds, Ball *one_ball)
     m_ballPosition.pointX += m_ballSpeed.pointX * deltaSeconds;    // нахождение "новой координаты oX"
     m_ballPosition.pointY += m_ballSpeed.pointY * deltaSeconds;    // нахождение "новой координаты oY"
 
-    /* здесь будет реализовываться взаимодействие между шариками */
 
+    /* здесь будет реализовываться взаимодействие между шариками */
     for (int i = 0; i < BALLS_COUNTER; ++i)
     {
         for(int j = i + 1; j < BALLS_COUNTER; ++j)
         {
-            // const скорость_шарика_из_массива_m_ball[i] = m_balls[i];
-            // проверяем столкновения i с j
             Ball* FirstBall = m_balls.at(i);
             Ball* SecondBall = m_balls.at(j);
 
@@ -83,34 +82,34 @@ void Scene::updateOneBall(float deltaSeconds, Ball *one_ball)
             Point FirstBallSpeed = FirstBall->getVelocity();
             Point SecondBallSpeed = SecondBall->getVelocity();
 
-            float FirstBallSize = FirstBall->getSize();
-            float SecondBallSize = SecondBall->getSize();
+            int FirstBallSize = FirstBall->getSize();
+            int SecondBallSize = SecondBall->getSize();
 
+             /* расстояние между центрами шаров */
+            int TotalDistanseBetweenEdgeBalls   = FirstBallSize/2 + SecondBallSize/2;
+             /* расстояние между центрами шаров */
+            int DistanceBetweenCentreBalls      = ((sqrt(pow(SecondBallPosition.pointX - FirstBallPosition.pointX, 2)
+                                                       + pow(SecondBallPosition.pointY - FirstBallPosition.pointY, 2))));
+             /* расстояние между границами шаров */
+            int DistanceBetweenEdgeBalls        = DistanceBetweenCentreBalls - TotalDistanseBetweenEdgeBalls/100;
 
-
-            if ((FirstBallPosition.pointX - FirstBallSize <= (FirstBallSize/2 + SecondBallSize/2)) && (m_ballPosition.pointX - FirstBallSize <= (FirstBallSize/2 + SecondBallSize/2)))
+            if (TotalDistanseBetweenEdgeBalls  > DistanceBetweenEdgeBalls)
             {
-                for (int i=0;;++i){
-                qDebug()<< "YEP"<<i;
+                qDebug()<<"КАСАНИЕ";
+                //std::exit(0);
             }
-            //каждый шар имеет свой центр m_ballPosition.point*.
-            //каждый шар имеет свой радиус-вектор - просто точку,
-            //m_ballSpeed.point* в направлении которой он движется.
-
-            //тогда точка в которую движется центр
-            //m_ballDirection.point* = m_ballPosition.point* + m_ballSpeed.point*
-
-            //новое направление полёта = m_2ballPosition.pointX-m_1ballPosition.pointX;
-
-            //m_ballSpeed.pointX = m_ballSpeed.pointX*cos(b) - m_ballSpeed.pointY*sin(b);
-            //m_ballSpeed.pointY = m_ballSpeed.pointX*sin(b) + m_ballSpeed.pointY*cos(b);
+            else if (TotalDistanseBetweenEdgeBalls < DistanceBetweenEdgeBalls)
+            {
+                qDebug()<<"ВСЁ ОКЕЙ";
+                    break;
             }
         }
     }
 
     /*мы должны проверить два случая
       - левая граница шарика левее левой границы поля
-      - правая граница шарика правее правой границы поля*/
+      - правая граница шарика правее правой границы поля */
+
 
     if (m_ballPosition.pointX < m_borders.leftEdge())
     {
