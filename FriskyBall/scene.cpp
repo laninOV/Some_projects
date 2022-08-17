@@ -9,17 +9,11 @@
     но с другим значением*/
 
 namespace{
-//    /*  100pix = 0.02(m/s) or 0.072(km/h)       */
-//    constexpr float         BALL_SPEED_X = 0.8;                // скорость пикселей в секунду по оси оX
-//    constexpr float         BALL_SPEED_Y = 0.02;               // 0.01(m/s) or (1cm/s) скорость пикселей в секунду по оси оY
-//    /*  100pix = 0.02(m) or 20(cm)              */
-//    constexpr int              BALL_SIZE = 100;                // размер шарика
-//    /*  9.81m/s^2 = 981 см/s^2                  */
-    constexpr double GRAVITATIONAL_FORCE = 0;               // ускорение свободного падения
+    constexpr double GRAVITATIONAL_FORCE = 0;                  // ускорение свободного падения
     constexpr double    COEF_ENERGY_LOSS = 1 - 0.2;            // потеря энергии при отскоке 20%
     constexpr int                  SCALE = 480;                // коэффициент, для приведения к нормальным величинам
-    int                     JUMP_COUNTER = 0;
-    constexpr int          BALLS_COUNTER = 100;
+    int                     JUMP_COUNTER = 0;                  // количество отскоков
+    constexpr int          BALLS_COUNTER = 2;                // количество шариков
     constexpr unsigned      WINDOW_WIDTH = 1920;
     constexpr unsigned     WINDOW_HEIGHT = 1000;
 
@@ -29,7 +23,7 @@ Scene::Scene(const limitfield &borders)
     : m_gravity(GRAVITATIONAL_FORCE*SCALE)
     , m_borders(borders)
 {
-    srand ( time(NULL) );
+    srand(time(NULL));
 
     for(int i = 0; i < BALLS_COUNTER; i++){
         Point position;
@@ -37,11 +31,11 @@ Scene::Scene(const limitfield &borders)
         position.pointY = 0 + rand() % WINDOW_HEIGHT + 1;
 
         Point velocity;
-        velocity.pointX = -50 + rand() % 100 + 1;
-        velocity.pointY = -50 + rand() % 100 + 1;
+        velocity.pointX = -50 + rand() % 300 + 1;
+        velocity.pointY = -50 + rand() % 300 + 1;
 
         float size;
-        size = 0 + rand() % 50 + 1;
+        size = 300 + rand() % 450 + 1;
 
         float loss;
         loss = (rand() % 100)/(100*1.0); // диапазон чисел от 0 до 1
@@ -72,6 +66,48 @@ void Scene::updateOneBall(float deltaSeconds, Ball *one_ball)
     m_ballPosition.pointX += m_ballSpeed.pointX * deltaSeconds;    // нахождение "новой координаты oX"
     m_ballPosition.pointY += m_ballSpeed.pointY * deltaSeconds;    // нахождение "новой координаты oY"
 
+    /* здесь будет реализовываться взаимодействие между шариками */
+
+    for (int i = 0; i < BALLS_COUNTER; ++i)
+    {
+        for(int j = i + 1; j < BALLS_COUNTER; ++j)
+        {
+            // const скорость_шарика_из_массива_m_ball[i] = m_balls[i];
+            // проверяем столкновения i с j
+            Ball* FirstBall = m_balls.at(i);
+            Ball* SecondBall = m_balls.at(j);
+
+            Point FirstBallPosition = FirstBall->getPosition();
+            Point SecondBallPosition = SecondBall->getPosition();
+
+            Point FirstBallSpeed = FirstBall->getVelocity();
+            Point SecondBallSpeed = SecondBall->getVelocity();
+
+            float FirstBallSize = FirstBall->getSize();
+            float SecondBallSize = SecondBall->getSize();
+
+
+
+            if ((FirstBallPosition.pointX - FirstBallSize <= (FirstBallSize/2 + SecondBallSize/2)) && (m_ballPosition.pointX - FirstBallSize <= (FirstBallSize/2 + SecondBallSize/2)))
+            {
+                for (int i=0;;++i){
+                qDebug()<< "YEP"<<i;
+            }
+            //каждый шар имеет свой центр m_ballPosition.point*.
+            //каждый шар имеет свой радиус-вектор - просто точку,
+            //m_ballSpeed.point* в направлении которой он движется.
+
+            //тогда точка в которую движется центр
+            //m_ballDirection.point* = m_ballPosition.point* + m_ballSpeed.point*
+
+            //новое направление полёта = m_2ballPosition.pointX-m_1ballPosition.pointX;
+
+            //m_ballSpeed.pointX = m_ballSpeed.pointX*cos(b) - m_ballSpeed.pointY*sin(b);
+            //m_ballSpeed.pointY = m_ballSpeed.pointX*sin(b) + m_ballSpeed.pointY*cos(b);
+            }
+        }
+    }
+
     /*мы должны проверить два случая
       - левая граница шарика левее левой границы поля
       - правая граница шарика правее правой границы поля*/
@@ -89,7 +125,7 @@ void Scene::updateOneBall(float deltaSeconds, Ball *one_ball)
 
     /*Аналогичные проверки потребуются для верхней и нижней границ.*/
 
-    else if (m_ballPosition.pointY - m_ballSize < m_borders.topEdge() - m_ballSize)
+    if (m_ballPosition.pointY - m_ballSize < m_borders.topEdge() - m_ballSize)
     {
         m_ballPosition.pointY = m_borders.topEdge();
         m_ballSpeed.pointY = -m_ballSpeed.pointY;
