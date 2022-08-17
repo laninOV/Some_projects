@@ -3,7 +3,7 @@
 GeometryBall::GeometryBall(float size)
     :_size(size)
 {
-    _thickness = size * 0.05f;
+    _thickness = size * 0.05f;          // толщина стенки
 }
 
 float GeometryBall::getSize() const

@@ -17,7 +17,6 @@ MainWindow::MainWindow(QWindow *parent)
 {
     /* Устанавливаем минимальные размеры окна. */
     setMinimumSize(QSize(WINDOW_WIDTH, WINDOW_HEIGHT));
-
     /* В конструкторе мы будем создавать новый объект сцены,
        связывая его отношением parent-child с классом окна путём передачи указателя this:*/
     m_updateTimer.start();
