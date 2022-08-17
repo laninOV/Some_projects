@@ -1,5 +1,6 @@
 #ifndef SCENE_H
 #define SCENE_H
+#include "ball.h"
 #include "limitfield.h"
 #include <QtGui>
 
@@ -10,19 +11,18 @@ public:
     Scene();
     void update(float deltaSeconds);
     void redraw(QPainter& painter);
-
     explicit Scene(const limitfield& borders); //??
 
+
+
 private:
+    void updateOneBall(float deltaSecond, Ball* one_ball);
+    /* добавим поля для хранения скорости шарика (которая теперь будет изменяться динамически),
+       размера шарика (неизменного), границ сцены (неизменных).*/
 
-    /*добавим поля для хранения скорости шарика (которая теперь будет изменяться динамически),
-     * размера шарика (неизменного), границ сцены (неизменных).*/
-
-    QVector2D           m_ballPosition;
-    QVector2D           m_ballSpeed;
     const double        m_gravity;
-    const QVector2D     m_ballSize;
     const limitfield    m_borders;
+    QList <Ball*>       m_balls;
 };
 
 #endif // SCENE_H
