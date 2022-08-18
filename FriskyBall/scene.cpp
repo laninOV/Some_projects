@@ -14,7 +14,7 @@ namespace{
     constexpr double    COEF_ENERGY_LOSS = 1 - 0.2;            // потеря энергии при отскоке 20%
     constexpr int                  SCALE = 480;                // коэффициент, для приведения к нормальным величинам
     int                     JUMP_COUNTER = 0;                  // количество отскоков
-    constexpr int          BALLS_COUNTER = 20;                // количество шариков
+    constexpr int          BALLS_COUNTER = 2;                // количество шариков
     constexpr unsigned      WINDOW_WIDTH = 1920;
     constexpr unsigned     WINDOW_HEIGHT = 1000;
 
@@ -36,7 +36,7 @@ Scene::Scene(const limitfield &borders)
         velocity.pointY = -50 + rand() % 300 + 1;
 
         int size;
-        size = 100;//100 + rand() % 350 + 1;
+        size = 400;//100 + rand() % 350 + 1;
 
         float loss;
         loss = (rand() % 100)/(100*1.0); // диапазон чисел от 0 до 1
@@ -85,22 +85,42 @@ void Scene::updateOneBall(float deltaSeconds, Ball *one_ball)
             int FirstBallSize = FirstBall->getSize();
             int SecondBallSize = SecondBall->getSize();
 
+            int FirstBallMass = FirstBallSize*4;
+            int SecondBallMass = SecondBallSize*4;
+
              /* расстояние между центрами шаров */
             int TotalDistanseBetweenEdgeBalls   = FirstBallSize/2 + SecondBallSize/2;
-             /* расстояние между центрами шаров */
+
+             /* расстояние между центрами шаров */          
             int DistanceBetweenCentreBalls      = ((sqrt(pow(SecondBallPosition.pointX - FirstBallPosition.pointX, 2)
                                                        + pow(SecondBallPosition.pointY - FirstBallPosition.pointY, 2))));
-             /* расстояние между границами шаров */
-            int DistanceBetweenEdgeBalls        = DistanceBetweenCentreBalls - TotalDistanseBetweenEdgeBalls/100;
 
-            if (TotalDistanseBetweenEdgeBalls  > DistanceBetweenEdgeBalls)
+            /* расстояние между границами шаров */
+            int DistanceBetweenEdgeBalls        = DistanceBetweenCentreBalls - TotalDistanseBetweenEdgeBalls;
+
+
+            if (DistanceBetweenEdgeBalls  < 0)
             {
                 qDebug()<<"КАСАНИЕ";
-            m_ballSpeed.pointX = -m_ballSpeed.pointY;
-            m_ballSpeed.pointY = -m_ballSpeed.pointX;
-                //std::exit(0);
+            //m_ballSpeed.pointX = ;
+            //m_ballSpeed.pointY = ;
+
+            //m_ballSpeed.pointX = (FirstBallMass - SecondBallMass) * FirstBallSpeed.pointX + 2 * SecondBallMass * SecondBallSpeed.pointX / (FirstBallMass + SecondBallMass);
+            //m_ballSpeed.pointY = (FirstBallMass - SecondBallMass) * FirstBallSpeed.pointY + 2 * SecondBallMass * SecondBallSpeed.pointY / (FirstBallMass + SecondBallMass);
+
+            //m_ballSpeed.pointX = (SecondBallMass - FirstBallMass) * SecondBallSpeed.pointX + 2 * FirstBallMass * FirstBallSpeed.pointX / (FirstBallMass + SecondBallMass);
+            //m_ballSpeed.pointY = (SecondBallMass - FirstBallMass) * SecondBallSpeed.pointY + 2 * FirstBallMass * FirstBallSpeed.pointY / (FirstBallMass + SecondBallMass);
+
+            m_ballSpeed.pointX = -sqrt((pow(FirstBallSpeed.pointX-m_ballSpeed.pointX, 2) + pow(SecondBallSpeed.pointX - m_ballSpeed.pointX, 2)));
+            m_ballSpeed.pointY = -sqrt((pow(FirstBallSpeed.pointY-m_ballSpeed.pointY, 2) + pow(SecondBallSpeed.pointY - m_ballSpeed.pointY, 2)));
+
+
+            //FirstBallMass * FirstBallSpeed.pointX + FirstBallMass * FirstBallSpeed.pointY = FirstBallMass * FirstBallSpeed.pointX + FirstBallMass * FirstBallSpeed.pointY;
+
+            one_ball->setVelocity(m_ballSpeed);
+
             }
-            else if (TotalDistanseBetweenEdgeBalls < DistanceBetweenEdgeBalls)
+            else if (DistanceBetweenEdgeBalls  > 0)
             {
                 qDebug()<<"ВСЁ ОКЕЙ";
                     break;
