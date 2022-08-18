@@ -1,0 +1,11 @@
+
+FriskyBall/FriskyBall.pro.user
+FriskyBall/bin/
+FriskyBall/build/
+FriskyBall/.qmake.stash
+FriskyBall/.qtc_clangd
+
+FriskyBall/Makefile
+*.Debug
+*.Release
+FriskyBall/ui_mainwindow.h

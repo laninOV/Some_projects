@@ -30,6 +30,13 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
+DESTDIR=bin
+OBJECTS_DIR=build
+MOC_DIR=build
+RCC_DIR=build
+
+
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
