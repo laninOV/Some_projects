@@ -16,9 +16,10 @@ public:
 
 
 private:
-    void updateOneBall(float deltaSecond, Ball* one_ball);
+    void ProcessCollideOneBall(float deltaSecond, Ball* one_ball);
     /* добавим поля для хранения скорости шарика (которая теперь будет изменяться динамически),
        размера шарика (неизменного), границ сцены (неизменных).*/
+    void ProcessCollideBettwenBalls(Ball* one_ball, Ball* second_ball);
 
     const double        m_gravity;
     const limitfield    m_borders;
