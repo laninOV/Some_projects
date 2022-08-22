@@ -167,6 +167,9 @@ void Scene::ProcessCollideOneBall(float deltaSeconds, Ball *one_ball)
 
 void Scene::ProcessCollideBettwenBalls(Ball *one_ball, Ball *second_ball)
 {
+    //Паша: задумайся о смысле этой функции, с какой целью ты передаешь
+    // в эту функцию два параметра, если сама функция и так ищет пару шариков
+    // для обработки их столкновения?
     Point m_ballSpeed    = one_ball->getVelocity();
     Point m_ballPosition = one_ball->getPosition();
     int m_ballSize       = one_ball->getSize();
@@ -248,8 +251,16 @@ void Scene::redraw(QPainter &painter)
 
 void Scene::update(float deltaSeconds) //период времени
 {
+    //Паша: тут должны быть вызваны две функции
+    // processCollideBeatwenBalls и processCollideBallsWithEdge
+    // функции не должны ничего принимать, кроме deltaSeconds,  они у нас выполняют обработку
+    // двух разных процессов для всех шариков
+    //
+    // первая функция как у тебя написано выше, пробегает по шарикам в двух циклах и обрабатывает столкновения
+    // для каждой пары шариков.
+    //
+    // вторая функция делает то, что описано ниже кроме функции
     for(auto ball : m_balls){
         ProcessCollideOneBall(deltaSeconds, ball);
-        ProcessCollideBettwenBalls(ball, ball);
     }
 }
