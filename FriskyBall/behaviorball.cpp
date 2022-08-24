@@ -25,3 +25,14 @@ Point BehaviorBall::getVelocity() const
 {
     return _velocity;
 }
+
+bool BehaviorBall::colideCounter(int max_colide_count)
+{
+    _colide_count += 1;
+    if (_colide_count == max_colide_count){
+        return true;
+    }
+    else{
+        return false;
+    }
+}

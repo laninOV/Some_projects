@@ -9,3 +9,4 @@ FriskyBall/Makefile
 *.Debug
 *.Release
 FriskyBall/ui_mainwindow.h
+FriskyBall/debug/FriskyBall.pdb

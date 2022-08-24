@@ -35,6 +35,7 @@ protected:
       - метод exposeEvent вызывается при показе окна */
     bool event(QEvent *event) override;
     void resizeEvent(QResizeEvent *resizeEvent) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
     void exposeEvent(QExposeEvent *event) override;
 
 

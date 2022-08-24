@@ -12,14 +12,13 @@ public:
     void update(float deltaSeconds);
     void redraw(QPainter& painter);
     explicit Scene(const limitfield& borders); //??
-
+    void reBuild();
 
 
 private:
-    void ProcessCollideOneBall(float deltaSecond, Ball* one_ball);
-    /* добавим поля для хранения скорости шарика (которая теперь будет изменяться динамически),
-       размера шарика (неизменного), границ сцены (неизменных).*/
-    void ProcessCollideBettwenBalls(Ball* one_ball, Ball* second_ball);
+    void processCollideBallsWithEdge(float deltaSecond);
+    void processCollideBettwenBalls (float deltaSecond);
+    void processCollideOneBall (float deltaSecond, Ball *one_ball);
 
     const double        m_gravity;
     const limitfield    m_borders;

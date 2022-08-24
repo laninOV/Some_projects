@@ -11,7 +11,6 @@ public:
 
     float getSize() const;
     float getThickness() const;
-
 };
 
 #endif // GEOMETRYBALL_H

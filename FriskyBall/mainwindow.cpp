@@ -59,6 +59,13 @@ void MainWindow::resizeEvent(QResizeEvent *resizeEvent)
     m_backingStore->resize(resizeEvent->size());
 }
 
+void MainWindow::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    m_scene->reBuild();
+
+    QWindow::mouseDoubleClickEvent(event);
+}
+
     /* Опишем метод exposeEvent: этот метод класса QWindow
        библиотека Qt вызывает при фактическом показе окна.*/
 void MainWindow::exposeEvent(QExposeEvent *)
