@@ -46,8 +46,8 @@ void Scene::reBuild()
         position.pointY = 0 + rand() % WINDOW_HEIGHT + 1;
 
         Point velocity;
-        velocity.pointX = -50 + rand() % 300 + 1;
-        velocity.pointY = -50 + rand() % 300 + 1;
+        velocity.pointX = -50 + rand() % 1900 + 1;
+        velocity.pointY = -50 + rand() % 1900 + 1;
 
         int size;
         size = 10 + rand() % 50 + 1;
@@ -124,7 +124,7 @@ void Scene::processCollideOneBall(float deltaSeconds, Ball *one_ball)
     one_ball->setPosition(m_ballPosition);
     one_ball->setVelocity(m_ballSpeed);
 }
-
+int i = 0;
 void Scene::processCollideBettwenBalls(float deltaSecond)
 {
     QSet<Ball*> forDelete; //список для удаления шариков
@@ -199,11 +199,17 @@ void Scene::processCollideBettwenBalls(float deltaSecond)
     QList<Ball*> tmp;       //список для оставшихся шариков
     for(auto ball : m_balls){
         if(forDelete.contains(ball)){
-            continue; //чепуха какая-то...
+            ++i;
+            qDebug() << ball << i << endl;
+            tmp.append(ball);
+
+            //m_balls = tmp;
+             //чепуха какая-то...
         }
     }
     //если шарика нет в списке на удаление, то добавить его в tmp
-    m_balls = tmp;
+    tmp = m_balls;
+    //m_balls = tmp;
 }
 
 void Scene::redraw(QPainter &painter)
