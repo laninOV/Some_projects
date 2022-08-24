@@ -198,7 +198,7 @@ void Scene::processCollideBettwenBalls(float deltaSecond)
 
     QList<Ball*> tmp;       //список для оставшихся шариков
     for(auto ball : m_balls){
-        if(m_balls.count(ball)){
+        if(forDelete.contains(ball)){
             continue; //чепуха какая-то...
         }
     }
