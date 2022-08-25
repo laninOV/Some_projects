@@ -18,7 +18,7 @@ constexpr double GRAVITATIONAL_FORCE = 0;                  // ускорение
 constexpr double    COEF_ENERGY_LOSS = 1 - 0.2;            // потеря энергии при отскоке 20%
 constexpr int                  SCALE = 480;                // коэффициент, для приведения к нормальным величинам
 int                     JUMP_COUNTER = 0;                  // количество отскоков
-constexpr int          BALLS_COUNTER = 20;                  // количество шариков
+constexpr int          BALLS_COUNTER = 10;                  // количество шариков
 constexpr unsigned      WINDOW_WIDTH = 1920;
 constexpr unsigned     WINDOW_HEIGHT = 1000;
 }
@@ -46,11 +46,11 @@ void Scene::reBuild()
         position.pointY = 0 + rand() % WINDOW_HEIGHT + 1;
 
         Point velocity;
-        velocity.pointX = -50 + rand() % 1900 + 1;
-        velocity.pointY = -50 + rand() % 1900 + 1;
+        velocity.pointX = -50 + rand() % 2000 + 1;
+        velocity.pointY = -50 + rand() % 2000 + 1;
 
         int size;
-        size = 10 + rand() % 50 + 1;
+        size = 50 + rand() % 200 + 1;
 
         float loss;
         loss = (rand() % 100)/(100*1.0); // диапазон чисел от 0 до 1
@@ -124,14 +124,15 @@ void Scene::processCollideOneBall(float deltaSeconds, Ball *one_ball)
     one_ball->setPosition(m_ballPosition);
     one_ball->setVelocity(m_ballSpeed);
 }
-int i = 0;
+
 void Scene::processCollideBettwenBalls(float deltaSecond)
 {
     QSet<Ball*> forDelete; //список для удаления шариков
     /* здесь будет реализовываться взаимодействие между шариками */
-    for (int i = 0; i < BALLS_COUNTER; ++i)
+
+    for (int i = 0; i < m_balls.size(); ++i) // количество шариков в массиве m_balls вместо BALLS_COUNTER
     {
-        for(int j = i + 1; j < BALLS_COUNTER; ++j)
+        for(int j = i + 1; j < m_balls.size(); ++j)
         {
             Ball* FirstBall = m_balls.at(i);
             Ball* SecondBall = m_balls.at(j);
@@ -198,18 +199,11 @@ void Scene::processCollideBettwenBalls(float deltaSecond)
 
     QList<Ball*> tmp;       //список для оставшихся шариков
     for(auto ball : m_balls){
-        if(forDelete.contains(ball)){
-            ++i;
-            qDebug() << ball << i << endl;
+        if(!forDelete.contains(ball)){
             tmp.append(ball);
-
-            //m_balls = tmp;
-             //чепуха какая-то...
         }
     }
-    //если шарика нет в списке на удаление, то добавить его в tmp
-    tmp = m_balls;
-    //m_balls = tmp;
+    m_balls = tmp;
 }
 
 void Scene::redraw(QPainter &painter)
