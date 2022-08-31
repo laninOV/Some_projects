@@ -17,16 +17,16 @@ struct limitfield{
     Point size;
 
     float leftEdge() const {
-        return origin.pointX;
+        return origin.getPointX();
     }
     float rightEdge() const{
-        return origin.pointX + size.pointX;
+        return origin.getPointX() + size.getPointX();
     }
     float topEdge() const {
-        return origin.pointY;
+        return origin.getPointY();
     }
     float bottomEdge() const{
-        return origin.pointY + size.pointY;
+        return origin.getPointY() + size.getPointY();
     }
 };
 #endif // LIMITFIELD_H

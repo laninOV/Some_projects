@@ -14,11 +14,11 @@
     но с другим значением*/
 
 namespace{
-constexpr double GRAVITATIONAL_FORCE = 0;                  // ускорение свободного падения
+constexpr double GRAVITATIONAL_FORCE = 10;                  // ускорение свободного падения
 constexpr double    COEF_ENERGY_LOSS = 1 - 0.2;            // потеря энергии при отскоке 20%
 constexpr int                  SCALE = 480;                // коэффициент, для приведения к нормальным величинам
 int                     JUMP_COUNTER = 0;                  // количество отскоков
-constexpr int          BALLS_COUNTER = 10;                  // количество шариков
+constexpr int          BALLS_COUNTER = 10;                 // количество шариков
 constexpr unsigned      WINDOW_WIDTH = 1920;
 constexpr unsigned     WINDOW_HEIGHT = 1000;
 }
@@ -41,13 +41,9 @@ void Scene::reBuild()
     srand(time(NULL));
 
     for(int i = 0; i < BALLS_COUNTER; i++){
-        Point position;
-        position.pointX = 0 + rand() % WINDOW_WIDTH + 1;
-        position.pointY = 0 + rand() % WINDOW_HEIGHT + 1;
+        Point position((0 + rand() % WINDOW_HEIGHT + 1), (0 + rand() % WINDOW_WIDTH + 1));
 
-        Point velocity;
-        velocity.pointX = -50 + rand() % 2000 + 1;
-        velocity.pointY = -50 + rand() % 2000 + 1;
+        Point velocity((-50 + rand() % 2000 + 1), (-50 + rand() % 2000 + 1));
 
         int size;
         size = 50 + rand() % 200 + 1;
@@ -81,43 +77,49 @@ void Scene::processCollideOneBall(float deltaSeconds, Ball *one_ball)
     Point m_ballPosition = one_ball->getPosition();
     int m_ballSize       = one_ball->getSize();
 
-    m_ballSpeed.pointX += 1 * deltaSeconds;            // нахождение "новой скорости для оси oX"
-    m_ballSpeed.pointY += m_gravity * deltaSeconds;    // нахождение "новой скорости для оси oY"
+    // нахождение "ускорения"
+    Point deltaSpeed(0 , m_gravity);
 
-    m_ballPosition.pointX += (m_ballSpeed.pointX * deltaSeconds);    // нахождение "новой координаты oX"
-    m_ballPosition.pointY += (m_ballSpeed.pointY * deltaSeconds);    // нахождение "новой координаты oY"
+    //x = x0 +v0*t+(a*t^2)/2 нахождение новой координаты
+    m_ballPosition += m_ballSpeed * deltaSeconds + (deltaSpeed * pow(deltaSeconds , 2)) * 0.5;
+
+    //v = v0 + a*t; нахождение новой скорости
+    m_ballSpeed += deltaSpeed * deltaSeconds;
+
+    //
 
     /*мы должны проверить два случая
       - левая граница шарика левее левой границы поля
       - правая граница шарика правее правой границы поля */
 
-    if ((m_ballPosition.pointX) < m_borders.leftEdge() + m_ballSize*0.5)
+    if ((m_ballPosition.getPointX()) < m_borders.leftEdge() + m_ballSize*0.5)
     {
-        m_ballPosition.pointX = m_borders.leftEdge() + m_ballSize*0.5;
-        m_ballSpeed.pointX = -m_ballSpeed.pointX * COEF_ENERGY_LOSS;
+        m_ballPosition.setPointX(m_borders.leftEdge() + m_ballSize*0.5);
+        m_ballSpeed.setPointX(-m_ballSpeed.getPointX() * COEF_ENERGY_LOSS);
     }
-    else if (m_ballPosition.pointX > m_borders.rightEdge() - m_ballSize*0.5)
+
+    else if (m_ballPosition.getPointX() > m_borders.rightEdge() - m_ballSize*0.5)
     {
-        m_ballPosition.pointX = m_borders.rightEdge() - m_ballSize*0.5;
-        m_ballSpeed.pointX = -m_ballSpeed.pointX * COEF_ENERGY_LOSS;
+        m_ballPosition.setPointX(m_borders.rightEdge() - m_ballSize*0.5);
+        m_ballSpeed.setPointX(-m_ballSpeed.getPointX() * COEF_ENERGY_LOSS);
     }
 
     /*Аналогичные проверки потребуются для верхней и нижней границ.*/
 
-    if (m_ballPosition.pointY - m_ballSize < m_borders.topEdge() - m_ballSize*0.5)
+    if (m_ballPosition.getPointY() - m_ballSize < m_borders.topEdge() - m_ballSize*0.5)
     {
-        m_ballPosition.pointY = m_borders.topEdge() + m_ballSize*0.5;
-        m_ballSpeed.pointY = -m_ballSpeed.pointY;
+        m_ballPosition.setPointY(m_borders.topEdge() + m_ballSize*0.5);
+        m_ballSpeed.setPointY(-m_ballSpeed.getPointY());
     }
-    else if (m_ballPosition.pointY > m_borders.bottomEdge() - m_ballSize*0.5)
+    else if (m_ballPosition.getPointY() > m_borders.bottomEdge() - m_ballSize*0.5)
     {
-        m_ballPosition.pointY = m_borders.bottomEdge()  - m_ballSize*0.5;
-        m_ballSpeed.pointY = -m_ballSpeed.pointY * COEF_ENERGY_LOSS;
-        if (m_ballPosition.pointY == m_borders.bottomEdge() - m_ballSize*0.5){
+        m_ballPosition.setPointY(m_borders.bottomEdge()  - m_ballSize*0.5);
+        m_ballSpeed.setPointY(-m_ballSpeed.getPointY() * COEF_ENERGY_LOSS);
+        if (m_ballPosition.getPointY() == m_borders.bottomEdge() - m_ballSize*0.5){
             JUMP_COUNTER = JUMP_COUNTER + 1;
         }
         if (JUMP_COUNTER > 70){
-            m_ballSpeed.pointX = m_ballSpeed.pointX * (0.991);    // замедление качения шарика
+            m_ballSpeed.setPointX(m_ballSpeed.getPointX() * (0.991));    // замедление качения шарика
         }
     }
 
@@ -157,16 +159,16 @@ void Scene::processCollideBettwenBalls(float deltaSecond)
             double TotalDistanseBetweenEdgeBalls   = FirstBallSize/2 + SecondBallSize/2;
 
             /* расстояние между центрами шаров */
-            double DistanceBetweenCentreBalls      = sqrt(pow(SecondBallPosition.pointX - FirstBallPosition.pointX, 2)
-                                                          + pow(SecondBallPosition.pointY - FirstBallPosition.pointY, 2));
+            double DistanceBetweenCentreBalls      = sqrt(pow(SecondBallPosition.getPointX() - FirstBallPosition.getPointX(), 2)
+                                                          + pow(SecondBallPosition.getPointY() - FirstBallPosition.getPointY(), 2));
 
             /* расстояние между границами шаров */
             double DistanceBetweenEdgeBalls        = DistanceBetweenCentreBalls - TotalDistanseBetweenEdgeBalls;
 
             if (DistanceBetweenEdgeBalls  < 0 && abs(DistanceBetweenEdgeBalls) > 10)
             {
-                bool first_for_delete = FirstBall->colideCounter(5);
-                bool second_for_delete = SecondBall->colideCounter(5);
+                bool first_for_delete = FirstBall->colideCounter(50);
+                bool second_for_delete = SecondBall->colideCounter(50);
 
                 if (first_for_delete == true){
                     forDelete << FirstBall;
@@ -178,17 +180,18 @@ void Scene::processCollideBettwenBalls(float deltaSecond)
                     continue;
                 }
 
-                Point m_ballSpeed;
+                Point m_ballSpeedFirst = ((FirstBallSpeed * ((FirstBallMass - SecondBallMass) / (FirstBallMass + SecondBallMass))
+                                         + SecondBallSpeed * (2 * SecondBallMass / (FirstBallMass + SecondBallMass))));
 
-                m_ballSpeed.pointX = FirstBallSpeed.pointX * (FirstBallMass - SecondBallMass) / (FirstBallMass + SecondBallMass) + SecondBallSpeed.pointX * (2 * SecondBallMass) / (FirstBallMass + SecondBallMass);
-                m_ballSpeed.pointY = FirstBallSpeed.pointY * (FirstBallMass - SecondBallMass) / (FirstBallMass + SecondBallMass) + SecondBallSpeed.pointY * (2 * SecondBallMass) / (FirstBallMass + SecondBallMass);
+                Point m_ballSpeedSecond = ((FirstBallSpeed * ((2 * FirstBallMass) / (FirstBallMass + SecondBallMass))
+                                         + SecondBallSpeed * ((SecondBallMass - FirstBallMass) / (SecondBallMass + FirstBallMass))));
 
-                FirstBall->setVelocity(m_ballSpeed);
+                //FirstBall->setVelocity(m_ballSpeed);
+                //SecondBall->setVelocity(m_ballSpeed);
+                FirstBall->setVelocity(m_ballSpeedFirst);
+                SecondBall->setVelocity(m_ballSpeedSecond);
 
-                m_ballSpeed.pointX = FirstBallSpeed.pointX * (2 * FirstBallMass) / (FirstBallMass + SecondBallMass) + SecondBallSpeed.pointX * (SecondBallMass - FirstBallMass) / (SecondBallMass + FirstBallMass);
-                m_ballSpeed.pointY = FirstBallSpeed.pointY * (2 * FirstBallMass) / (FirstBallMass + SecondBallMass) + SecondBallSpeed.pointY * (SecondBallMass - FirstBallMass) / (SecondBallMass + FirstBallMass);
 
-                SecondBall->setVelocity(m_ballSpeed);
             }
         }
     }
